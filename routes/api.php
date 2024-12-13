@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\ResellerController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\VisitController;
+use App\Http\Controllers\UserSalesController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/verify-phone', [AuthController::class, 'verifyPhone']);
+Route::post('/auth/register', [UserSalesController::class, 'register']);
+Route::post('/auth/login', [UserSalesController::class, 'login']);
+Route::post('/auth/verify-phone', [UserSalesController::class, 'verifyPhone']);
 
 // Route untuk CRUD Reseller
 Route::middleware('auth:sanctum')->group(function () {
@@ -21,15 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/resellers/{id}', [ResellerController::class, 'update']);  // Update reseller berdasarkan ID
     Route::delete('/resellers/{id}', [ResellerController::class, 'destroy']); // Hapus reseller
 
-    // Visit Routes
-    Route::post('/visits', [VisitController::class, 'store']);              // Membuat visit baru
-    Route::post('/visits/confirm/{visit_id}', [VisitController::class, 'confirm']); // Konfirmasi visit
-
-    Route::get('/tasks/{resellerId}', [TaskController::class, 'index']);       // List task untuk reseller tertentu
-    Route::post('/tasks', [TaskController::class, 'store']);                  // Tambah task baru
-    Route::get('/tasks/detail/{id}', [TaskController::class, 'show']);        // Detail task
-    Route::put('/tasks/{id}', [TaskController::class, 'update']);             // Update task
-    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);         // Hapus task
+    Route::post('/tasks', [TaskController::class, 'store']); // Create task
+    Route::get('/tasks', [TaskController::class, 'index']); // List tasks
+    Route::put('/tasks/{id}', [TaskController::class, 'update']); // Update task
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']); // Delete task
+    Route::put('/tasks/{id}/mark-as-completed', [TaskController::class, 'markAsCompleted']); // Mark task as completed
 });
 
 

@@ -2,6 +2,8 @@
 
 // app/Http/Controllers/ResellerController.php
 
+// app/Http/Controllers/ResellerController.php
+
 namespace App\Http\Controllers;
 
 use App\Models\Reseller;
@@ -23,6 +25,7 @@ class ResellerController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'profile_photo' => 'nullable|string', // Foto profil
+            'status' => 'required|in:verified,unverified' // Status wajib diisi
         ];
 
         $validator = Validator::make($req->all(), $rules);
@@ -44,7 +47,8 @@ class ResellerController extends Controller
             'latitude' => $req->latitude,
             'longitude' => $req->longitude,
             'profile_photo' => $req->profile_photo, // Simpan foto profil
-            'user_id' => $user->id,
+            'status' => $req->status, // Menyimpan status
+            'user_sales_id' => $user->id,
         ]);
 
         return response()->json([
@@ -66,7 +70,7 @@ class ResellerController extends Controller
     public function show($id)
     {
         $user = auth()->user();
-        $reseller = Reseller::where('id', $id)->where('user_id', $user->id)->first();
+        $reseller = Reseller::where('id', $id)->where('user_sales_id', $user->id)->first();
 
         if (!$reseller) {
             return response()->json(['message' => 'Reseller tidak ditemukan atau tidak dimiliki oleh user ini'], 404);
@@ -79,7 +83,7 @@ class ResellerController extends Controller
     public function update(Request $req, $id)
     {
         $user = auth()->user();
-        $reseller = Reseller::where('id', $id)->where('user_id', $user->id)->first();
+        $reseller = Reseller::where('id', $id)->where('user_sales_id', $user->id)->first();
 
         if (!$reseller) {
             return response()->json(['message' => 'Reseller tidak ditemukan atau tidak dimiliki oleh user ini'], 404);
@@ -95,6 +99,7 @@ class ResellerController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'profile_photo' => 'nullable|string', // Aturan untuk foto profil
+            'status' => 'sometimes|required|in:verified,unverified' // Mengatur status
         ];
 
         $validator = Validator::make($req->all(), $rules);
@@ -104,7 +109,7 @@ class ResellerController extends Controller
         }
 
         $reseller->update($req->only([
-            'name', 'birthdate', 'gender', 'phone', 'address', 'latitude', 'longitude', 'profile_photo'
+            'name', 'birthdate', 'gender', 'phone', 'address', 'latitude', 'longitude', 'profile_photo', 'status'
         ]));
 
         return response()->json([
@@ -117,7 +122,7 @@ class ResellerController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        $reseller = Reseller::where('id', $id)->where('user_id', $user->id)->first();
+        $reseller = Reseller::where('id', $id)->where('user_sales_id', $user->id)->first();
 
         if (!$reseller) {
             return response()->json(['message' => 'Reseller tidak ditemukan atau tidak dimiliki oleh user ini'], 404);

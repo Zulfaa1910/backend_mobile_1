@@ -5,19 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\User;
+use App\Models\UserSales;
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class UserSalesController extends Controller
 {
     public function register(Request $req)
     {
         // Validasi input
         $rules = [
             'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email|unique:user_sales',
             'password' => 'required|string|min:6',
-            'phone' => 'required|string|unique:users',
+            'phone' => 'required|string|unique:user_sales',
             'birthdate' => 'required|date',
             'gender' => 'required|in:male,female,other',
             'address' => 'required|string',
@@ -38,7 +38,7 @@ class AuthController extends Controller
         $kode_sales = $this->generateKodeSales();
 
         // Simpan user baru
-        $user = User::create([
+        $user = UserSales::create([
             'name' => $req->name,
             'email' => $req->email,
             'password' => Hash::make($req->password),
@@ -71,7 +71,6 @@ class AuthController extends Controller
     {
         $userAgent = $req->header('User-Agent');
 
-        // Contoh parsing sederhana menggunakan regex
         if (preg_match('/\((.*?)\)/', $userAgent, $matches)) {
             return $matches[1]; // Mengambil informasi dalam tanda kurung
         }
@@ -88,51 +87,41 @@ class AuthController extends Controller
     // Fungsi untuk generate kode sales
     private function generateKodeSales()
     {
-        $lastUser = User::orderBy('kode_sales', 'desc')->first();
+        $lastUser = UserSales::orderBy('kode_sales', 'desc')->first();
 
         if (!$lastUser) {
             return 'SL000001';  // Jika belum ada kode sales, mulai dari SL000001
         }
 
-        // Ambil angka dari kode terakhir
         $lastKodeSales = $lastUser->kode_sales;
         $lastNumber = intval(substr($lastKodeSales, 2)); // Mengambil angka setelah 'SL'
 
-        // Increment angkanya
         $newNumber = $lastNumber + 1;
-
-        // Membuat kode sales baru dengan leading zeros (SL000001, SL000002, dst.)
         return 'SL' . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
     }
 
     public function login(Request $req)
     {
-        // Validasi input
         $rules = [
             'email' => 'required|string|email',
             'password' => 'required|string'
         ];
         $req->validate($rules);
 
-        // Cari user berdasarkan email
-        $user = User::where('email', $req->email)->first();
+        $user = UserSales::where('email', $req->email)->first();
 
         if ($user && Hash::check($req->password, $user->password)) {
-            // Cek apakah nomor telepon sudah diverifikasi
             if (!$user->phone_verified_at) {
                 return response()->json(['message' => 'Phone number not verified.'], 403);
             }
 
-            // Buat token
             $token = $user->createToken('Personal Access Token')->plainTextToken;
-            $response = ['user' => $user, 'token' => $token];
-            return response()->json($response, 200);
+            return response()->json(['user' => $user, 'token' => $token], 200);
         }
 
         return response()->json(['message' => 'Incorrect email or password'], 401);
     }
 
-    // Verifikasi kode yang dikirim ke telepon
     public function verifyPhone(Request $req)
     {
         $req->validate([
@@ -140,13 +129,13 @@ class AuthController extends Controller
             'verification_code' => 'required|string'
         ]);
 
-        $user = User::where('phone', $req->phone)
+        $user = UserSales::where('phone', $req->phone)
                     ->where('verification_code', $req->verification_code)
                     ->first();
 
         if ($user) {
             $user->phone_verified_at = now();
-            $user->verification_code = null;  // Hapus kode verifikasi setelah diverifikasi
+            $user->verification_code = null;
             $user->save();
 
             return response()->json(['message' => 'Phone verified successfully.'], 200);

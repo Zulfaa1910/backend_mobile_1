@@ -1,5 +1,7 @@
 <?php
 
+// app/Http/Kernel.php
+
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -14,14 +16,13 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
+        // Middleware global lainnya...
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        // \Fruitcake\Cors\HandleCors::class,
     ];
 
     /**
@@ -40,9 +41,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            \Illuminate\Http\Middleware\HandleCors::class, // Tambahkan ini
+            \Illuminate\Http\Middleware\HandleCors::class, 
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -66,5 +66,15 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+
+    /**
+     * The application's custom route middleware.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        // Middleware lainnya...
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
 }

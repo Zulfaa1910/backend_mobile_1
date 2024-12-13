@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class UserSales extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
@@ -20,7 +20,7 @@ class User extends Authenticatable
         'address',
         'verification_code',
         'kode_unik',
-        'kode_sales',  // Hapus spasi di sini
+        'kode_sales',
         'merk_hp',
         'phone_verified_at',
     ];
@@ -38,11 +38,11 @@ class User extends Authenticatable
 
     public function resellers()
     {
-        return $this->hasMany(Reseller::class); // User memiliki banyak reseller
+        return $this->hasMany(Reseller::class); // UserSales memiliki banyak reseller
     }
 
     public function visits()
     {
-        return $this->hasMany(Visit::class); // User memiliki banyak reseller
+        return $this->hasMany(Visit::class); // UserSales memiliki banyak visit
     }
 }

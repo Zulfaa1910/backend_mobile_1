@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateUsersSalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('user_sales', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -23,10 +23,10 @@ class CreateUsersTable extends Migration
             $table->date('birthdate');
             $table->enum('gender', ['male', 'female', 'other']);
             $table->text('address');
-            $table->string('kode_unik')->unique(); // Kode unik
-            $table->string('kode_sales')->unique(); // Kode sales
-            $table->string('merk_hp')->nullable(); // Merk HP
-            $table->timestamp('phone_verified_at')->nullable(); // Waktu verifikasi telepon
+            $table->string('kode_unik')->unique();
+            $table->string('kode_sales')->unique();
+            $table->string('merk_hp')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->timestamps();
         });
     }
@@ -38,6 +38,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_sales'); // Corrected table name
     }
 }
