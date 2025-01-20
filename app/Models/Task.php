@@ -14,9 +14,12 @@ class Task extends Model
         'description',
         'reseller_id',
         'user_sales_id',
-        'assigned_to', // Can be warehouse, maintenance, reseller, etc.
-        'status',       // Pending or completed
-        'photo_url',    // URL to the photo or base64 string
+        'assigned_to',
+        'status',
+        'photo_url',
+        'deadline',
+        'upload_time',
+        'input_source', // Tambahkan ini
     ];
 
     public function reseller()

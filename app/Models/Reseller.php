@@ -31,8 +31,8 @@ class Reseller extends Model
         return $this->belongsTo(UserSales::class);
     }
 
-    public function visits()
+    public function tasks()
     {
-        return $this->hasMany(Visit::class); // User memiliki banyak reseller
+        return $this->hasMany(Task::class);
     }
 }

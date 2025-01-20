@@ -11,23 +11,13 @@ class UserSales extends Authenticatable
     use HasApiTokens, Notifiable;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'phone',
-        'birthdate',
-        'gender',
-        'address',
-        'verification_code',
-        'kode_unik',
-        'kode_sales',
-        'merk_hp',
+        'name', 'email', 'password', 'phone', 'birthdate', 'gender', 'address', 
+        'verification_code', 'kode_unik', 'kode_sales', 'merk_hp', 'profile_photo', // Added profile_photo here
         'phone_verified_at',
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
     protected $casts = [
@@ -38,11 +28,14 @@ class UserSales extends Authenticatable
 
     public function resellers()
     {
-        return $this->hasMany(Reseller::class); // UserSales memiliki banyak reseller
+        return $this->hasMany(Reseller::class);
     }
-
-    public function visits()
+    public function getProfilePhotoUrlAttribute()
     {
-        return $this->hasMany(Visit::class); // UserSales memiliki banyak visit
+        if ($this->profile_photo) {
+            return asset('uploads/profile_photos/' . $this->profile_photo);
+        }
+        return null;
     }
+    // Accessor to get the full URL for the profile photo
 }

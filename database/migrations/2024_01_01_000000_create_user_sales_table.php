@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersSalesTable extends Migration
+class CreateUserSalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,6 +27,7 @@ class CreateUsersSalesTable extends Migration
             $table->string('kode_sales')->unique();
             $table->string('merk_hp')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
+            $table->string('profile_photo')->nullable(); // New column for profile photo
             $table->timestamps();
         });
     }
@@ -38,6 +39,6 @@ class CreateUsersSalesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_sales'); // Corrected table name
+        Schema::dropIfExists('user_sales'); 
     }
 }
